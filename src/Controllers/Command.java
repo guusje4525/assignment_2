@@ -16,6 +16,7 @@ public class Command {
         this.name = name;
     }
 
+    //Currently not being used, but I like to keep the options open in case I want to use it later
     public Command(String ActionType, String name, ArrayList<Command> command){
         this.ActionType = ActionType;
         this.name = name;
