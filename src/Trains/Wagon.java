@@ -1,4 +1,4 @@
-package Train;
+package Trains;
 
 /**
  * Created by Guus on 12/12/2016.

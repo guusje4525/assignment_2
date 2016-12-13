@@ -1,4 +1,4 @@
-package Train;
+package Trains;
 
 import java.util.ArrayList;
 

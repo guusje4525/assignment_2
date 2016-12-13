@@ -1,7 +1,7 @@
 package Service;
 
 import Controllers.Controller;
-import Train.Train;
+import Trains.Train;
 
 import java.util.ArrayList;
 
