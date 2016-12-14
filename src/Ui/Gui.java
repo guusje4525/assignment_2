@@ -1,9 +1,7 @@
 package Ui;
 
+import Controllers.Controller;
 import Controllers.Translator;
-import Trains.Train;
-import Trains.TrainStorage;
-import Trains.Wagon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +15,21 @@ public class Gui {
     private static JFrame frame;
     private static JPanel panel;
     private static JButton executeButton;
-    private static JLabel info, header;
     private static JTextArea console, dsl;
     private static JTextField input;
-    private static JScrollPane consoleField, dslField;
+    static Action submitInput = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
+            new Translator(input.getText());
+            refreshDSL();
+            input.setText("");
+        }
+    };
 
     //setbounds(x, y, w, h)
     //1ste hoever naar rechts
+    private static JScrollPane consoleField, dslField;
 
     public static void createFrame() {
 
@@ -80,27 +86,8 @@ public class Gui {
         refreshDSL();
     }
 
-    static Action submitInput = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
-            new Translator(input.getText());
-            refreshDSL();
-            input.setText("");
-        }
-    };
-
     public static void refreshDSL(){
-        dsl.setText("");
-        for(Train t : TrainStorage.getTrains()){
-            dsl.append("(" + t.getName() + ")");
-            if(!t.getWagons().isEmpty()){
-                for(Wagon w : t.getWagons()){
-                    dsl.append("(" + w.getWagon() + ")");
-                }
-            }
-            dsl.append("\n");
-        }
+        dsl.setText(Controller.createDSL());
     }
 
     public static void setConsoleOutput(String text){

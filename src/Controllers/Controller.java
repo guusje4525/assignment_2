@@ -1,7 +1,11 @@
 package Controllers;
 
+import Trains.Train;
 import Trains.TrainStorage;
+import Trains.Wagon;
 import Ui.Gui;
+
+import java.util.List;
 
 /**
  * Created by Guus on 12/12/2016.
@@ -54,6 +58,24 @@ public class Controller {
     public static String deleteWagon(String wagonName){
         if(TrainStorage.deleteWagon(wagonName)) return "Wagon was deleted";
         return "Unable to find wagon";
+    }
+
+    public static List<Train> getTrains() {
+        return TrainStorage.getTrains();
+    }
+
+    public static String createDSL() {
+        String returnValue = "";
+        for (Train t : getTrains()) {
+            returnValue += "(" + t.getName() + ")";
+            if (!t.getWagons().isEmpty()) {
+                for (Wagon w : t.getWagons()) {
+                    returnValue += "(" + w.getWagon() + ")";
+                }
+            }
+            returnValue += "\n";
+        }
+        return returnValue;
     }
 
 }
