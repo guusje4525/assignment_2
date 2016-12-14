@@ -7,11 +7,19 @@ import java.util.ArrayList;
  */
 public class Train {
 
-    private ArrayList<Wagon> wagon = new ArrayList<>();
+    private ArrayList<Wagon> wagons = new ArrayList<>();
     private String name;
 
     public Train(String name){
         this.name = name;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void addWagon(Wagon wagon){
+        wagons.add(wagon);
     }
 
 }

@@ -7,12 +7,11 @@ import Ui.Gui;
  */
 public class Controller {
 
-    private Gui frame;
+    private static Gui frame;
 
-    public Controller(){
+    public static void start(){
         frame = new Gui();
         //observer hier voor events
     }
-
 
 }

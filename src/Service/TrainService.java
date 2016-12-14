@@ -2,6 +2,7 @@ package Service;
 
 import Controllers.Controller;
 import Trains.Train;
+import Trains.TrainStorage;
 
 import java.util.ArrayList;
 
@@ -10,13 +11,8 @@ import java.util.ArrayList;
  */
 public class TrainService {
 
-    private static ArrayList<Train> trains = new ArrayList<>();
-    private static Controller controller = new Controller();
-
     public static void main(String[] args){
-
-        //System.out.println("Start");
-
+        Controller.start();
     }
 
 }
