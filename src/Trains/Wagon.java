@@ -6,7 +6,7 @@ package Trains;
 public class Wagon {
 
     private String name;
-    private int seats;
+    private int seats = 20; //20 is default
 
     public Wagon(String name){
         this.name = name;
@@ -15,6 +15,14 @@ public class Wagon {
     public Wagon(String name, int seats){
         this.name = name;
         this.seats = seats;
+    }
+
+    public String getWagon(){
+        return name;
+    }
+
+    public int getSeats(){
+        return seats;
     }
 
 }

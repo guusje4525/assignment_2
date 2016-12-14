@@ -18,8 +18,20 @@ public class Train {
         return name;
     }
 
+    public ArrayList<Wagon> getWagons(){
+        return wagons;
+    }
+
     public void addWagon(Wagon wagon){
         wagons.add(wagon);
+    }
+
+    public int getSeats(){
+        int totalSeats = 0;
+        for(Wagon w : wagons){
+            totalSeats += w.getSeats();
+        }
+        return totalSeats;
     }
 
 }

@@ -1,30 +1,31 @@
 package Ui;
 
 import Controllers.Translator;
+import Trains.Train;
+import Trains.TrainStorage;
+import Trains.Wagon;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 
 /**
  * Created by Guus on 12/12/2016.
  */
 public class Gui {
 
-    private JFrame frame;
-    private JPanel panel;
-    private JButton executeButton;
-    private JLabel info, header;
-    private JTextArea console, dsl;
-    private JTextField input;
-    private JScrollPane consoleField, dslField;
+    private static JFrame frame;
+    private static JPanel panel;
+    private static JButton executeButton;
+    private static JLabel info, header;
+    private static JTextArea console, dsl;
+    private static JTextField input;
+    private static JScrollPane consoleField, dslField;
 
     //setbounds(x, y, w, h)
     //1ste hoever naar rechts
 
-    public Gui() {
-
+    public static void createFrame() {
 
         //Creating frame
         frame = new JFrame("Richrail");
@@ -61,30 +62,48 @@ public class Gui {
         dslField = new JScrollPane (dsl, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         dslField.setBounds(10, 470, 560, 400);
 
+        //Adding elements to panel
         panel.add(consoleField);
         panel.add(input);
         panel.add(executeButton);
         panel.add(dslField);
 
+        //Adding panel to frame and configuring the frame
         frame.add(panel);
         frame.setSize(590, 940);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        //refreshes te DSL screen
+        refreshDSL();
     }
 
-    Action submitInput = new AbstractAction() {
+    static Action submitInput = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
-            Translator command = new Translator(input.getText());
-            setConsoleOutput(command.toString());
+            new Translator(input.getText());
+            refreshDSL();
             input.setText("");
         }
     };
 
-    public void setConsoleOutput(String text){
+    public static void refreshDSL(){
+        dsl.setText("");
+        for(Train t : TrainStorage.getTrains()){
+            dsl.append("(" + t.getName() + ")");
+            if(!t.getWagons().isEmpty()){
+                for(Wagon w : t.getWagons()){
+                    dsl.append("(" + w.getWagon() + ")");
+                }
+            }
+            dsl.append("\n");
+        }
+    }
+
+    public static void setConsoleOutput(String text){
         console.append(text + "\n");
     }
 

@@ -8,11 +8,10 @@ import java.util.*;
 public class Translator {
 
     private String[] commandInput;
-    private String consoleOutput = "Command is not valid";
     private int index = 0;
-    private TempCommand c = new TempCommand();
-    private Boolean debug = true;
-    private Command commands;
+    private Command command = new Command();
+    private Boolean debug = false;
+    private TempCommand commands;
 
     public Translator(String commandInput){
         this.commandInput = commandInput.split(" ");
@@ -22,66 +21,71 @@ public class Translator {
         //Translating commandInput to an command object
         getCommand(commands);
 
-        System.out.println(c.toString());
+        command.execute();
+
+        //NEED A CHECK THAT INPUT CAN ONLY CONTAIN NUMBERS AND LETTERS!!
 
     }
 
     void createCommandSchema(){
         //NEW command
-        Command newCommand =
-                new Command("action", "new",
-                        new Command("action", "train",
-                                new Command("string", "train-name")
+        //.setCommandToExecute("TrainStorage.addTrain(:train-name:)")
+        TempCommand newCommand =
+                new TempCommand("action", "new",
+                        new TempCommand("action", "train",
+                                new TempCommand("string", "train-name")
                         ),
-                        new Command("action", "wagon",
-                                new Command("string", "wagon-name",
-                                        new Command("action", "seats",
-                                                new Command("integer", "number-seats",
-                                                        new Command("action", "train",
-                                                                new Command("string", "train-name")
+                        new TempCommand("action", "wagon",
+                                new TempCommand("string", "wagon-name",
+                                        new TempCommand("action", "seats",
+                                                new TempCommand("integer", "number-seats",
+                                                        new TempCommand("action", "train",
+                                                                new TempCommand("string", "train-name")
                                                         )
                                                 )
                                         ),
-                                        new Command("action", "train",
-                                                new Command("string", "train-name")
+                                        new TempCommand("action", "train",
+                                                new TempCommand("string", "train-name")
                                         )
                                 )
                         )
                 );
 
         //GET command
-        Command getCommand =
-                new Command("action", "get",
-                        new Command("action", "seats",
-                                new Command("action", "train",
-                                        new Command("string", "train-name")
+        TempCommand getCommand =
+                new TempCommand("action", "get",
+                        new TempCommand("action", "seats",
+                                new TempCommand("action", "train",
+                                        new TempCommand("string", "train-name")
                                 ),
-                                new Command("action", "wagon",
-                                        new Command("string", "wagon-name")
-                                )
+                                new TempCommand("action", "wagon",
+                                        new TempCommand("string", "wagon-name")
+                                ),
+                                new TempCommand("action", "all")
                         )
                 );
 
         //DELETE command
-        Command deleteCommand =
-                new Command("action", "delete",
-                        new Command("action", "train",
-                                new Command("string", "train-name")
+        TempCommand deleteCommand =
+                new TempCommand("action", "delete",
+                        new TempCommand("action", "train",
+                                new TempCommand("string", "train-name")
                         ),
-                        new Command("action", "wagon",
-                                new Command("string", "wagon-name")
+                        new TempCommand("action", "wagon",
+                                new TempCommand("string", "wagon-name")
                         )
                 );
 
-        commands = new Command("action", "commands");
+        commands = new TempCommand("action", "commands");
         commands.addCommands(newCommand);
         commands.addCommands(getCommand);
         commands.addCommands(deleteCommand);
+        commands.addCommands(new TempCommand("action", "help")); //HELP command
     }
 
-    void getCommand(Command commands){
+    void getCommand(TempCommand commands){
 
-        for(Command comm : commands.getCommands()){
+        for(TempCommand comm : commands.getCommands()){
 
             //Checking if the commandInput is not running out of bounds
             if((index >= 0) && (index < this.commandInput.length)){
@@ -93,15 +97,15 @@ public class Translator {
                 //Checking what actiontype the current command we are loping though has
                 switch(comm.getActionType()){
                     case "action" :
-                        if(index == 0 && this.commandInput[index].equals(comm.getName())) c.setAction(this.commandInput[index]);
+                        if(index == 0 && this.commandInput[index].equals(comm.getName())) command.setAction(this.commandInput[index]);
                         if(this.commandInput[index].equals(comm.getName())) changed = true;
                         break;
                     case "string" :
-                        c.addStringArgs(comm.getName(), this.commandInput[index]);
+                        command.addStringArgs(comm.getName(), this.commandInput[index]);
                         changed = true;
                         break;
                     case "integer" :
-                        c.addIntegerArgs(comm.getName(), Integer.parseInt(this.commandInput[index]));
+                        command.addIntegerArgs(comm.getName(), Integer.parseInt(this.commandInput[index]));
                         changed = true;
                         break;
                     default :
@@ -112,7 +116,6 @@ public class Translator {
                 //Some checks to make sure the commandInput is valid
                 if(validAction){
                     if(comm.getCommands() == null) {
-                        consoleOutput = "Command is valid";
                         return;
                     } else if(changed){
                         if(debug) System.out.println("Increasing index...");
@@ -126,43 +129,72 @@ public class Translator {
 
     class TempCommand {
 
-        String action = "";
-        Map<String, String> StringArgs = new HashMap<>();
-        Map<String, Integer> IntegerArgs = new HashMap<>();
+        private String ActionType;
+        private String name;
+        private ArrayList<TempCommand> commands = null;
+        private String CommandToExecute;
 
-        public TempCommand(){}
-        void setAction(String action){
-            this.action = action;
-        }
-        void addStringArgs(String key, String value){
-            StringArgs.put(key, value);
-        }
-        void addIntegerArgs(String key, int value){
-            IntegerArgs.put(key, value);
-        }
-        public String toString(){
-            String returnValue = "Action: " + action + "\n";
-            Iterator it = StringArgs.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                returnValue += pair.getKey() + ": " + pair.getValue() + "\n";
-                it.remove();
-            }
-
-            Iterator it2 = IntegerArgs.entrySet().iterator();
-            while (it2.hasNext()) {
-                Map.Entry pair = (Map.Entry)it2.next();
-                returnValue += pair.getKey() + ": " + pair.getValue() + "\n";
-                it2.remove();
-            }
-
-            return returnValue;
+        public TempCommand(String ActionType, String name){
+            this.ActionType = ActionType;
+            this.name = name;
         }
 
-    }
+        //Currently not being used, but I like to keep the options open in case I want to use it later
+        public TempCommand(String ActionType, String name, ArrayList<TempCommand> command){
+            this.ActionType = ActionType;
+            this.name = name;
+            this.commands = command;
+        }
 
-    public String toString(){
-        return consoleOutput;
+        public TempCommand(String ActionType, String name, TempCommand command){
+            this.ActionType = ActionType;
+            this.name = name;
+            this.commands = new ArrayList<>();
+            this.commands.add(command);
+        }
+
+        public TempCommand(String ActionType, String name, TempCommand command, TempCommand command2){
+            this.ActionType = ActionType;
+            this.name = name;
+            this.commands = new ArrayList<>();
+            this.commands.add(command);
+            this.commands.add(command2);
+        }
+
+        public TempCommand(String ActionType, String name, TempCommand command, TempCommand command2, TempCommand command3){
+            this.ActionType = ActionType;
+            this.name = name;
+            this.commands = new ArrayList<>();
+            this.commands.add(command);
+            this.commands.add(command2);
+            this.commands.add(command3);
+        }
+
+        public void addCommands(TempCommand command){
+            if(commands == null) commands = new ArrayList<>();
+            this.commands.add(command);
+        }
+
+        public ArrayList<TempCommand> getCommands(){
+            return commands;
+        }
+
+        public String getName(){
+            return name;
+        }
+
+        public String getActionType(){
+            return ActionType;
+        }
+
+        public void setCommandToExecute(String comm){
+            CommandToExecute = comm;
+        }
+
+        public String getCommandToExecute(){
+            return CommandToExecute;
+        }
+
     }
 
 }
