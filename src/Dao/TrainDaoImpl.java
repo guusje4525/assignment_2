@@ -1,7 +1,50 @@
 package Dao;
 
-/**
- * Created by Guus on 12/12/2016.
- */
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class TrainDaoImpl {
+
+	public static void main(String[] argv) {
+
+		System.out.println("-------- Oracle JDBC Connection Testing ------");
+
+		try {
+
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your Oracle JDBC Driver?");
+			e.printStackTrace();
+			return;
+
+		}
+
+		System.out.println("Oracle JDBC Driver Registered!");
+
+		Connection connection = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:oracle:thin:@ondora02.hu.nl:8521/cursus02.hu.nl", 
+					"tocba_2016_2c_team5", "tocba_2016_2c_team5");
+
+		} catch (SQLException e) {
+
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return;
+
+		}
+
+		if (connection != null) {
+			System.out.println("You made it, take control your database now!");
+		} else {
+			System.out.println("Failed to make connection!");
+		}
+	}
+
 }
