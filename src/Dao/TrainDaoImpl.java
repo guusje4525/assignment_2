@@ -4,13 +4,12 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import Trains.Train;
 import Trains.Wagon;
 
 public class TrainDaoImpl {
 
-	public static java.sql.Connection Connection() {
+	public static Connection Connection() {
 		System.out.println("Testing database connection...");
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");

@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by Guus on 12/14/2016.
- */
 public class TrainStorage {
 
     private static List<Train> trains = new ArrayList<Train>();
