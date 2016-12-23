@@ -30,7 +30,7 @@ public class TrainDaoImpl {
 
 			connection = DriverManager.getConnection(
 					"jdbc:oracle:thin:@ondora02.hu.nl:8521/cursus02.hu.nl", 
-					"tocba_2016_2c_team5", "tocba_2016_2c_team5");
+				"tocba_2016_2c_team5", "tocba_2016_2c_team5");
 
 		} catch (SQLException e) {
 
