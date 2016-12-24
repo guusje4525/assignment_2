@@ -5,6 +5,7 @@ import Trains.TrainStorage;
 import Trains.Wagon;
 import Ui.Gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,22 +20,61 @@ public class Controller {
 
     public static void updateConsole(String newOutput){
         Gui.setConsoleOutput(newOutput);
-        Gui.refreshDSL();
+        refreshScreen();
+    }
+
+    public static void refreshScreen() {
+        Gui.refreshScreen();
+    }
+
+    public static void clearConsole() {
+        Gui.clearConsole();
+    }
+
+    public static void setItemsInSelectTrain() {
+        Gui.setItemsInSelectTrain();
+    }
+
+    public static List<String> getTrainNames() {
+        ArrayList<String> trainList = new ArrayList<>();
+        for (Train tempTrain : getTrains()) {
+            trainList.add(tempTrain.getName());
+        }
+        return trainList;
+    }
+
+    public static List<String> getWagonNames(String trainName) {
+        ArrayList<String> wagonList = new ArrayList<>();
+        for (Train tempTrain : getTrains()) {
+            if (tempTrain.getName().equals(trainName)) {
+                for (Wagon wagon : tempTrain.getWagons()) {
+                    wagonList.add(wagon.getWagon());
+                }
+            }
+        }
+        return wagonList;
     }
 
     public static void addTrain(String trainName){
-        TrainStorage.addTrain(trainName);
-        Controller.updateConsole("New train added");
+        //if train doesn't exist
+        if (!TrainStorage.trainExist(trainName)) {
+            TrainStorage.addTrain(trainName);
+            Controller.updateConsole("New train added");
+        } else Controller.updateConsole("Train name must be unique");
     }
 
     public static void addWagon(String trainName, String wagonName){
-        TrainStorage.addWagon(trainName, wagonName);
-        Controller.updateConsole("New wagon added");
+        if (!TrainStorage.wagonExist(wagonName)) {
+            TrainStorage.addWagon(trainName, wagonName);
+            Controller.updateConsole("New wagon added");
+        } else Controller.updateConsole("Wagon name must be unique");
     }
 
     public static void addWagon(String trainName, String wagonName, int seats){
-        TrainStorage.addWagon(trainName, wagonName, seats);
-        Controller.updateConsole("New wagon added");
+        if (!TrainStorage.wagonExist(wagonName)) {
+            TrainStorage.addWagon(trainName, wagonName, seats);
+            Controller.updateConsole("New wagon added");
+        } else Controller.updateConsole("Wagon name must be unique");
     }
 
     public static String getWagonSeats(String wagonName){
@@ -50,14 +90,14 @@ public class Controller {
         return TrainStorage.getAllSeats();
     }
 
-    public static String deleteTrain(String trainName){
-        if(TrainStorage.deleteTrain(trainName)) return "Train was deleted";
-        return "Unable to find train";
+    public static void deleteTrain(String trainName) {
+        if (TrainStorage.deleteTrain(trainName)) updateConsole("Train was deleted");
+        else updateConsole("Unable to find train");
     }
 
-    public static String deleteWagon(String wagonName){
-        if(TrainStorage.deleteWagon(wagonName)) return "Wagon was deleted";
-        return "Unable to find wagon";
+    public static void deleteWagon(String wagonName) {
+        if (TrainStorage.deleteWagon(wagonName)) updateConsole("Wagon was deleted");
+        else updateConsole("Unable to find wagon");
     }
 
     public static List<Train> getTrains() {

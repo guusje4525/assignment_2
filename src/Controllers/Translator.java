@@ -1,6 +1,6 @@
 package Controllers;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Created by Guus on 12/12/2016.
@@ -22,9 +22,6 @@ public class Translator {
         getCommand(commands);
 
         command.execute();
-
-        //NEED A CHECK THAT INPUT CAN ONLY CONTAIN NUMBERS AND LETTERS!!
-
     }
 
     void createCommandSchema(){
@@ -187,12 +184,12 @@ public class Translator {
             return ActionType;
         }
 
-        public void setCommandToExecute(String comm){
-            CommandToExecute = comm;
-        }
-
         public String getCommandToExecute(){
             return CommandToExecute;
+        }
+
+        public void setCommandToExecute(String comm) {
+            CommandToExecute = comm;
         }
 
     }

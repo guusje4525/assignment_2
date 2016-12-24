@@ -9,6 +9,10 @@ public class TrainService {
 
     public static void main(String[] args){
 
+        Controller.start();
+
+        //This will later be replaced with the DAO!!
+
         Controller.addTrain("trein1");
         Controller.addTrain("trein2");
         Controller.addTrain("trein3");
@@ -20,10 +24,9 @@ public class TrainService {
         Controller.addWagon("trein3", "wagon5");
         Controller.addWagon("trein3", "wagon6");
         Controller.addWagon("trein3", "wagon7");
-        Controller.addWagon("trein5", "wagon70");
-        Controller.addWagon("trein78", "wagon70");
 
-        Controller.start();
+        Controller.clearConsole();
+        Controller.setItemsInSelectTrain(); //This function should be deprecated when Dao is correctly implemented
 
     }
 

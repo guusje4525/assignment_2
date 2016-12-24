@@ -1,11 +1,11 @@
 package Dao;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import Trains.Train;
 import Trains.Wagon;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainDaoImpl {
 
@@ -31,6 +31,22 @@ public class TrainDaoImpl {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static List<Train> getTrains() throws SQLException {
+
+		Statement stmt = Connection().createStatement();
+		ResultSet results = stmt.executeQuery("SELECT * FROM TRAIN");
+
+		List<Train> trains = new ArrayList<>();
+
+		while (results.next()) {
+			//trains.add(new Train(results.getString(0)));
+			System.out.println(results.getString(1));
+		}
+
+
+		return null;
 	}
 
 	public static void addTrain(Train t) throws SQLException{

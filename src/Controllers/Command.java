@@ -57,8 +57,8 @@ public class Command {
                 else Controller.updateConsole("All seats: " + Controller.getAllSeats());
                 break;
             case "delete":
-                if(StringArgs.containsKey("train-name")) Controller.updateConsole(Controller.deleteTrain(StringArgs.get("train-name")));
-                else if(StringArgs.containsKey("wagon-name")) Controller.updateConsole(Controller.deleteWagon(StringArgs.get("wagon-name")));
+                if (StringArgs.containsKey("train-name")) Controller.deleteTrain(StringArgs.get("train-name"));
+                else if (StringArgs.containsKey("wagon-name")) Controller.deleteWagon(StringArgs.get("wagon-name"));
                 else Controller.updateConsole("Unknow command");
                 break;
             case "help":

@@ -23,6 +23,15 @@ public class TrainStorage {
         return false;
     }
 
+    public static boolean wagonExist(String wagonName) {
+        for (Train train : trains) {
+            for (Wagon wagon : train.getWagons()) {
+                if (wagon.getWagon().equals(wagonName)) return true;
+            }
+        }
+        return false;
+    }
+
     public static void addWagon(String trainName, String wagonName){
         for(Train train : trains){
             if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName));
