@@ -8,7 +8,18 @@
       <id name="id" type="int" column="id">
          <generator class="native"/>
       </id>
-      <property name="id" column="id" type="number"/>
+      <property name="id" column="id" type="int"/>
       <property name="name" column="name" type="string"/>
+   </class>
+   
+   <class name="Trains.Wagon" table="TRAINWAGON">
+      <meta attribute="class-description">
+         De wagon klasse.
+      </meta>
+      <id name="WAGONID" type="int" column="WAGONID">
+         <generator class="native"/>
+      </id>
+      <property name="id" column="id" type="int"/>
+      <property name="SEATS" column="SEATS" type="int"/>
    </class>
 </hibernate-mapping>
