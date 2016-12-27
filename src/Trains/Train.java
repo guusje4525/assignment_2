@@ -17,6 +17,10 @@ public class Train {
     public String getName(){
         return name;
     }
+    
+    public void setName(String n) {
+    	name = n;
+    }
 
     public ArrayList<Wagon> getWagons(){
         return wagons;
