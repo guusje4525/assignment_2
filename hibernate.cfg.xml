@@ -9,5 +9,7 @@
         <property name="hibernate.connection.url">ondora02.hu.nl</property>
         <property name="hibernate.connection.username">tocba_2016_2c_team5</property>
         <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        
+           <mapping resource="src/mapping.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
