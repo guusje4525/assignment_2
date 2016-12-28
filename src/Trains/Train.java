@@ -10,6 +10,9 @@ public class Train {
     private ArrayList<Wagon> wagons = new ArrayList<>();
     private String name;
 
+    public Train() {
+    }
+
     public Train(String name){
         this.name = name;
     }

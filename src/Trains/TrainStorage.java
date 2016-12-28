@@ -13,9 +13,18 @@ public class TrainStorage {
         return trains;
     }
 
-    public static void addTrain(String trainName){
+    public static void setTrains(List<Train> trainList) {
+        trains = trainList;
+    }
+
+    public static Train addTrain(String trainName) {
         //ik weet het, ik doe moelijk maar het ziet er wel grappig uit :)
-        if(trains.stream().filter(train -> train.getName().equals(trainName)).collect(Collectors.toList()).isEmpty()) trains.add(new Train(trainName));
+        if (trains.stream().filter(train -> train.getName().equals(trainName)).collect(Collectors.toList()).isEmpty()) {
+            Train train = new Train(trainName);
+            trains.add(train);
+            return train;
+        }
+        return null;
     }
 
     public static boolean trainExist(String trainName) {
@@ -32,16 +41,28 @@ public class TrainStorage {
         return false;
     }
 
-    public static void addWagon(String trainName, String wagonName){
+    public static Wagon addWagon(String trainName, String wagonName) {
         for(Train train : trains){
-            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName));
+            if (train.getName().equals(trainName)) {
+                Wagon wagon = new Wagon(wagonName);
+                wagon.setTrainName(trainName);
+                train.addWagon(wagon);
+                return wagon;
+            }
         }
+        return null;
     }
 
-    public static void addWagon(String trainName, String wagonName, int seats){
+    public static Wagon addWagon(String trainName, String wagonName, int seats) {
         for(Train train : trains){
-            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName, seats));
+            if (train.getName().equals(trainName)) {
+                Wagon wagon = new Wagon(wagonName, seats);
+                wagon.setTrainName(trainName);
+                train.addWagon(wagon);
+                return wagon;
+            }
         }
+        return null;
     }
 
     public static int getWagonSeats(String wagonName){
@@ -70,31 +91,31 @@ public class TrainStorage {
         return totalSeats;
     }
 
-    public static boolean deleteTrain(String trainName){
+    public static Train deleteTrain(String trainName) {
         for (Iterator<Train> iter = trains.listIterator(); iter.hasNext(); ) {
             Train train = iter.next();
             if (train.getName().equals(trainName)) {
                 iter.remove();
-                return true;
+                return train;
             }
         }
         //No train found
-        return false;
+        return null;
     }
 
-    public static boolean deleteWagon(String wagonName){
+    public static Wagon deleteWagon(String wagonName) {
 
         for(Train train : trains){
             for (Iterator<Wagon> iter = train.getWagons().listIterator(); iter.hasNext(); ) {
                 Wagon wagon = iter.next();
                 if (wagon.getWagon().equals(wagonName)) {
                     iter.remove();
-                    return true;
+                    return wagon;
                 }
             }
         }
         //No wagon found
-        return false;
+        return null;
     }
 
 }
