@@ -34,7 +34,7 @@ public class dbController {
     }
 
     public static List<Wagon> getWagonsFromDB() {
-
+        if (factory == null) createFactory();
         Session session = factory.openSession();
         Transaction tx = null;
         List<Wagon> wagons = new ArrayList<>();
@@ -55,6 +55,7 @@ public class dbController {
     }
 
     public static void addObject(Object obj) {
+        if (factory == null) createFactory();
         Session session = factory.openSession();
         Transaction tx = null;
         try {
@@ -70,6 +71,7 @@ public class dbController {
     }
 
     public static void deleteObject(Object obj) {
+        if (factory == null) createFactory();
         Session session = factory.openSession();
         Transaction tx = null;
         try {
@@ -85,7 +87,7 @@ public class dbController {
     }
 
     public static List<Train> getTrainsFromDB() {
-
+        if (factory == null) createFactory();
         List<Wagon> wagons = getWagonsFromDB();
         Session session = factory.openSession();
         Transaction tx = null;

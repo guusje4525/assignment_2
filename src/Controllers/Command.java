@@ -41,31 +41,35 @@ public class Command {
 
         return returnValue;
     }
-    public void execute(){
+
+    public void execute(Controller controller) {
         switch(action){
             case "new":
                 if(StringArgs.containsKey("train-name")){
                     if(StringArgs.containsKey("wagon-name")){
-                        if(IntegerArgs.containsKey("number-seats")) Controller.addWagon(StringArgs.get("train-name"), StringArgs.get("wagon-name"), IntegerArgs.get("number-seats"));
-                        else Controller.addWagon(StringArgs.get("train-name"), StringArgs.get("wagon-name"));
-                    } else Controller.addTrain(StringArgs.get("train-name"));
-                } else Controller.updateConsole("Error occurred while trying to create a new train");
+                        if (IntegerArgs.containsKey("number-seats"))
+                            controller.addWagon(StringArgs.get("train-name"), StringArgs.get("wagon-name"), IntegerArgs.get("number-seats"));
+                        else controller.addWagon(StringArgs.get("train-name"), StringArgs.get("wagon-name"));
+                    } else controller.addTrain(StringArgs.get("train-name"));
+                } else controller.updateConsole("Error occurred while trying to create a new train");
                 break;
             case "get":
-                if(StringArgs.containsKey("train-name")) Controller.updateConsole(StringArgs.get("train-name") + ": " + Controller.getTrainSeats(StringArgs.get("train-name")) + " seats");
-                else if(StringArgs.containsKey("wagon-name")) Controller.updateConsole(StringArgs.get("wagon-name") + ": " + Controller.getWagonSeats(StringArgs.get("wagon-name")) + " seats");
-                else Controller.updateConsole("All seats: " + Controller.getAllSeats());
+                if (StringArgs.containsKey("train-name"))
+                    controller.updateConsole(StringArgs.get("train-name") + ": " + controller.getTrainSeats(StringArgs.get("train-name")) + " seats");
+                else if (StringArgs.containsKey("wagon-name"))
+                    controller.updateConsole(StringArgs.get("wagon-name") + ": " + controller.getWagonSeats(StringArgs.get("wagon-name")) + " seats");
+                else controller.updateConsole("All seats: " + controller.getAllSeats());
                 break;
             case "delete":
-                if (StringArgs.containsKey("train-name")) Controller.deleteTrain(StringArgs.get("train-name"));
-                else if (StringArgs.containsKey("wagon-name")) Controller.deleteWagon(StringArgs.get("wagon-name"));
-                else Controller.updateConsole("Unknow command");
+                if (StringArgs.containsKey("train-name")) controller.deleteTrain(StringArgs.get("train-name"));
+                else if (StringArgs.containsKey("wagon-name")) controller.deleteWagon(StringArgs.get("wagon-name"));
+                else controller.updateConsole("Unknow command");
                 break;
             case "help":
-                Controller.updateConsole("There is no help available right now. Please try again later");
+                controller.updateConsole("There is no help available right now. Please try again later");
                 break;
             default:
-                Controller.updateConsole("Unknown command");
+                controller.updateConsole("Unknown command");
                 break;
         }
     }

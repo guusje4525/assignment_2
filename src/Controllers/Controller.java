@@ -1,6 +1,7 @@
 package Controllers;
 
-import Dao.dbController;
+import Observer.Addtrain;
+import Observer.Addwagon;
 import Trains.Train;
 import Trains.TrainStorage;
 import Trains.Wagon;
@@ -13,31 +14,35 @@ import java.util.List;
  * Created by Guus on 12/12/2016.
  */
 public class Controller {
+    TrainStorage storage = new TrainStorage();
+    Addtrain newtrain = new Addtrain(storage);
+    Addwagon newwagon = new Addwagon(storage);
+    Gui ui;
 
-    public static void start(){
-        Gui.createFrame();
-        dbController.createFactory();
-        TrainStorage.setTrains(dbController.getTrainsFromDB());
+    public void start() {
+        storage.loadTrains();
+        ui = new Gui(this);
+        ui.createFrame();
     }
 
-    public static void updateConsole(String newOutput){
-        Gui.setConsoleOutput(newOutput);
+    public void updateConsole(String newOutput) {
+        ui.setConsoleOutput(newOutput);
         refreshScreen();
     }
 
-    public static void refreshScreen() {
-        Gui.refreshScreen();
+    public void refreshScreen() {
+        ui.refreshScreen();
     }
 
-    public static void clearConsole() {
-        Gui.clearConsole();
+    public void clearConsole() {
+        ui.clearConsole();
     }
 
-    public static void setItemsInSelectTrain() {
-        Gui.setItemsInSelectTrain();
+    public void setItemsInSelectTrain() {
+        ui.setItemsInSelectTrain();
     }
 
-    public static List<String> getTrainNames() {
+    public List<String> getTrainNames() {
         ArrayList<String> trainList = new ArrayList<>();
         for (Train tempTrain : getTrains()) {
             trainList.add(tempTrain.getName());
@@ -45,7 +50,7 @@ public class Controller {
         return trainList;
     }
 
-    public static List<String> getWagonNames(String trainName) {
+    public List<String> getWagonNames(String trainName) {
         ArrayList<String> wagonList = new ArrayList<>();
         for (Train tempTrain : getTrains()) {
             if (tempTrain.getName().equals(trainName)) {
@@ -57,62 +62,56 @@ public class Controller {
         return wagonList;
     }
 
-    public static void addTrain(String trainName){
+    public void addTrain(String trainName) {
         //if train doesn't exist
-        if (!TrainStorage.trainExist(trainName)) {
-            dbController.addObject(TrainStorage.addTrain(trainName));
-            updateConsole("New train added");
-        } else updateConsole("Train name must be unique");
+        if (!storage.trainExist(trainName)) {
+            storage.updateTrains(trainName, null, 0);
+            this.updateConsole("New train added");
+        } else this.updateConsole("Train name must be unique");
     }
 
-    public static void addWagon(String trainName, String wagonName){
-        if (!TrainStorage.wagonExist(wagonName)) {
-            dbController.addObject(TrainStorage.addWagon(trainName, wagonName));
-            updateConsole("New wagon added");
-        } else updateConsole("Wagon name must be unique");
+    public void addWagon(String trainName, String wagonName) {
+        if (!storage.wagonExist(wagonName)) {
+            storage.updateTrains(trainName, wagonName, 0);
+            this.updateConsole("New wagon added");
+        } else this.updateConsole("Wagon name must be unique");
     }
 
-    public static void addWagon(String trainName, String wagonName, int seats){
-        if (!TrainStorage.wagonExist(wagonName)) {
-            TrainStorage.addWagon(trainName, wagonName, seats);
-            updateConsole("New wagon added");
-        } else updateConsole("Wagon name must be unique");
+    public void addWagon(String trainName, String wagonName, int seats) {
+        if (!storage.wagonExist(wagonName)) {
+            storage.updateTrains(trainName, wagonName, seats);
+            this.updateConsole("New wagon added");
+        } else this.updateConsole("Wagon name must be unique");
     }
 
-    public static String getWagonSeats(String wagonName){
-        if(TrainStorage.getWagonSeats(wagonName) == -1) return "No wagon found";
-        else return "" + TrainStorage.getWagonSeats(wagonName);
+    public String getWagonSeats(String wagonName) {
+        if (storage.getWagonSeats(wagonName) == -1) return "No wagon found";
+        else return "" + storage.getWagonSeats(wagonName);
     }
 
-    public static String getTrainSeats(String trainName){
-        return TrainStorage.getTrainSeats(trainName);
+    public String getTrainSeats(String trainName) {
+        return storage.getTrainSeats(trainName);
     }
 
-    public static int getAllSeats(){
-        return TrainStorage.getAllSeats();
+    public int getAllSeats() {
+        return storage.getAllSeats();
     }
 
-    public static void deleteTrain(String trainName) {
-        Train train = TrainStorage.deleteTrain(trainName);
-        if (train != null) {
-            dbController.deleteObject(train);
-            updateConsole("Train was deleted");
-        } else updateConsole("Unable to find train");
+    public void deleteTrain(String trainName) {
+        if (storage.deleteTrain(trainName)) updateConsole("Train was deleted");
+        else updateConsole("Unable to find train");
     }
 
-    public static void deleteWagon(String wagonName) {
-        Wagon wagon = TrainStorage.deleteWagon(wagonName);
-        if (wagon != null) {
-            dbController.deleteObject(wagon);
-            updateConsole("Wagon was deleted");
-        } else updateConsole("Unable to find wagon");
+    public void deleteWagon(String wagonName) {
+        if (storage.deleteWagon(wagonName)) updateConsole("Wagon was deleted");
+        else updateConsole("Unable to find wagon");
     }
 
-    public static List<Train> getTrains() {
-        return TrainStorage.getTrains();
+    public List<Train> getTrains() {
+        return storage.getTrains();
     }
 
-    public static String createDSL() {
+    public String createDSL() {
         String returnValue = "";
         for (Train t : getTrains()) {
             returnValue += "(" + t.getName() + ")";

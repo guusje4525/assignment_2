@@ -13,7 +13,7 @@ public class Translator {
     private Boolean debug = false;
     private TempCommand commands;
 
-    public Translator(String commandInput){
+    public Translator(String commandInput, Controller controller) {
         this.commandInput = commandInput.split(" ");
         //Creating the schema for the commands
         createCommandSchema();
@@ -21,7 +21,7 @@ public class Translator {
         //Translating commandInput to an command object
         getCommand(commands);
 
-        command.execute();
+        command.execute(controller);
     }
 
     void createCommandSchema(){

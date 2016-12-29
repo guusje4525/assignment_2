@@ -13,36 +13,16 @@ import java.util.ArrayList;
  */
 public class Gui {
 
-    private static JFrame frame;
-    private static JPanel panel;
-    private static JButton executeButton, newTrainButton, newWagonButton;
-    private static JTextArea console, dsl;
-    private static JTextField input, newTrainInput, newWagonInput;
-    private static JLabel createNewTrain, createNewWagon;
-    private static JComboBox selectTrain;
-    private static JToggleButton dslToggle, trainGuiToggle;
-    private static ArrayList<JLabel> drawingProperties;
-    static Action submitInput = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
-
-            if (input.getText() != null && !"".equals(input.getText())) {
-                new Translator(input.getText());
-                input.setText("");
-            } else if (newTrainInput.getText() != null && !"".equals(newTrainInput.getText())) {
-                Controller.addTrain(newTrainInput.getText());
-                newTrainInput.setText("");
-            } else if (newWagonInput.getText() != null && !"".equals(newWagonInput.getText())) {
-                Controller.addWagon(String.valueOf(selectTrain.getSelectedItem()), newWagonInput.getText());
-                newWagonInput.setText("");
-            }
-            refreshScreen();
-            setItemsInSelectTrain();
-
-        }
-    };
-    static Action toggleDSL = new AbstractAction() {
+    private JFrame frame;
+    private JPanel panel;
+    private JButton executeButton, newTrainButton, newWagonButton;
+    private JTextArea console, dsl;
+    private JTextField input, newTrainInput, newWagonInput;
+    private JLabel createNewTrain, createNewWagon;
+    private JComboBox selectTrain;
+    private JToggleButton dslToggle, trainGuiToggle;
+    private ArrayList<JLabel> drawingProperties;
+    Action toggleDSL = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dslField.setVisible(true);
@@ -51,7 +31,28 @@ public class Gui {
             deleteTrainsOnScreen();
         }
     };
-    static Action toggleGUI = new AbstractAction() {
+    private Controller controller;
+    Action submitInput = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
+
+            if (input.getText() != null && !"".equals(input.getText())) {
+                new Translator(input.getText(), controller);
+                input.setText("");
+            } else if (newTrainInput.getText() != null && !"".equals(newTrainInput.getText())) {
+                controller.addTrain(newTrainInput.getText());
+                newTrainInput.setText("");
+            } else if (newWagonInput.getText() != null && !"".equals(newWagonInput.getText())) {
+                controller.addWagon(String.valueOf(selectTrain.getSelectedItem()), newWagonInput.getText());
+                newWagonInput.setText("");
+            }
+            refreshScreen();
+            setItemsInSelectTrain();
+
+        }
+    };
+    Action toggleGUI = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dslField.setVisible(false);
@@ -60,12 +61,15 @@ public class Gui {
             drawTrains();
         }
     };
-
     //setbounds(x, y, w, h)
     //1ste hoever naar rechts
-    private static JScrollPane consoleField, dslField;
+    private JScrollPane consoleField, dslField;
 
-    public static void createFrame() {
+    public Gui(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void createFrame() {
 
         //Creating frame
         frame = new JFrame("Richrail");
@@ -161,7 +165,7 @@ public class Gui {
         //Adding panel to frame and configuring the frame
         frame.add(panel);
         //frame.setSize(590, 940);
-        frame.setSize(1000, 940);
+        frame.setSize(1000, 1000);
         //frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -186,27 +190,27 @@ public class Gui {
         refreshScreen();
     }
 
-    public static void refreshScreen() {
-        dsl.setText(Controller.createDSL());
+    public void refreshScreen() {
+        dsl.setText(controller.createDSL());
         if (!dslField.isVisible()) drawTrains();
     }
 
-    public static void setConsoleOutput(String text){
+    public void setConsoleOutput(String text) {
         console.append(text + "\n");
     }
 
-    public static void clearConsole() {
+    public void clearConsole() {
         console.setText("");
     }
 
-    public static void setItemsInSelectTrain() {
+    public void setItemsInSelectTrain() {
         selectTrain.removeAllItems();
-        for (String trainName : Controller.getTrainNames()) {
+        for (String trainName : controller.getTrainNames()) {
             selectTrain.addItem(trainName);
         }
     }
 
-    public static void deleteTrainsOnScreen() {
+    public void deleteTrainsOnScreen() {
         if (drawingProperties != null) {
             for (JLabel j : drawingProperties) {
                 panel.remove(j);
@@ -216,7 +220,7 @@ public class Gui {
         }
     }
 
-    public static void drawTrains() {
+    public void drawTrains() {
         panel.validate();
         panel.repaint();
         deleteTrainsOnScreen();
@@ -224,12 +228,12 @@ public class Gui {
         int offsetX = 10;
         int offsetY = 470;
 
-        for (String trainName : Controller.getTrainNames()) {
+        for (String trainName : controller.getTrainNames()) {
             drawingProperties.add(drawTrain(offsetX, offsetY, trainName));
             drawingProperties.add(drawName(offsetX, offsetY, trainName));
 
             int tempOffsetX = offsetX + 170;
-            for (String wagonName : Controller.getWagonNames(trainName)) {
+            for (String wagonName : controller.getWagonNames(trainName)) {
                 drawingProperties.add(drawWagon(tempOffsetX, offsetY, wagonName));
                 drawingProperties.add(drawName(tempOffsetX, offsetY, wagonName));
                 tempOffsetX += 125;
@@ -238,7 +242,7 @@ public class Gui {
         }
     }
 
-    public static JLabel drawTrain(int x, int y, String trainName) {
+    public JLabel drawTrain(int x, int y, String trainName) {
         ImageIcon img = new ImageIcon("train.png");
         ImageIcon imgX = new ImageIcon("trainX.png");
         JLabel imgLabel = new JLabel(img);
@@ -257,14 +261,14 @@ public class Gui {
         });
         imgLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                Controller.deleteTrain(trainName);
+                controller.deleteTrain(trainName);
             }
         });
         panel.add(imgLabel);
         return imgLabel;
     }
 
-    public static JLabel drawWagon(int x, int y, String wagonname) {
+    public JLabel drawWagon(int x, int y, String wagonname) {
         ImageIcon img = new ImageIcon("wagon.png");
         ImageIcon imgX = new ImageIcon("wagonX.png");
         JLabel imgLabel = new JLabel(img);
@@ -283,14 +287,14 @@ public class Gui {
         });
         imgLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                Controller.deleteWagon(wagonname);
+                controller.deleteWagon(wagonname);
             }
         });
         panel.add(imgLabel);
         return imgLabel;
     }
 
-    public static JLabel drawName(int x, int y, String name) {
+    public JLabel drawName(int x, int y, String name) {
         JLabel nameLabel = new JLabel(name);
         nameLabel.setBounds(x, y + 100, 140, 30);
         panel.add(nameLabel);
