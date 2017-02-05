@@ -15,8 +15,18 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="ojdbc7" level="project" />
     <orderEntry type="library" name="Hibernate 5.2.3-5.2.3" level="project" />
-    <orderEntry type="library" name="sqlite-jdbc-3.15.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/hibernate-3.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Hibernate 5.2.3-5.2.3 (2)" level="project" />
+    <orderEntry type="library" name="Hibernate 5.2.3-5.2.3" level="project" />
+    <orderEntry type="library" name="sqlite-jdbc-3.16.1" level="project" />
   </component>
 </module>

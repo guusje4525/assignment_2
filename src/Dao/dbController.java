@@ -25,6 +25,13 @@ public class dbController {
     }
 
     public static void createFactory() {
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException eString) {
+            System.out.println("Could not init JDBC driver - driver not found");
+        }
+
         try {
             factory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
