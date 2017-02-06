@@ -1,7 +1,5 @@
 package Controllers;
 
-import Observer.Addtrain;
-import Observer.Addwagon;
 import Trains.Train;
 import Trains.TrainStorage;
 import Trains.Wagon;
@@ -15,8 +13,6 @@ import java.util.List;
  */
 public class Controller {
     TrainStorage storage = new TrainStorage();
-    Addtrain newtrain = new Addtrain(storage);
-    Addwagon newwagon = new Addwagon(storage);
     Gui ui;
 
     public void start() {
@@ -65,21 +61,21 @@ public class Controller {
     public void addTrain(String trainName) {
         //if train doesn't exist
         if (!storage.trainExist(trainName)) {
-            storage.updateTrains(trainName, null, 0);
+            storage.addTrain(trainName);
             this.updateConsole("New train added");
         } else this.updateConsole("Train name must be unique");
     }
 
     public void addWagon(String trainName, String wagonName) {
         if (!storage.wagonExist(wagonName)) {
-            storage.updateTrains(trainName, wagonName, 0);
+            storage.addWagon(trainName, wagonName);
             this.updateConsole("New wagon added");
         } else this.updateConsole("Wagon name must be unique");
     }
 
     public void addWagon(String trainName, String wagonName, int seats) {
         if (!storage.wagonExist(wagonName)) {
-            storage.updateTrains(trainName, wagonName, seats);
+            storage.addWagon(trainName, wagonName, seats);
             this.updateConsole("New wagon added");
         } else this.updateConsole("Wagon name must be unique");
     }

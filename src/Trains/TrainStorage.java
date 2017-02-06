@@ -5,10 +5,9 @@ import Dao.dbController;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
 import java.util.stream.Collectors;
 
-public class TrainStorage extends Observable {
+public class TrainStorage {
 
     private List<Train> trains = new ArrayList<Train>();
     private String train;
@@ -16,6 +15,23 @@ public class TrainStorage extends Observable {
     private int wagonseats;
 
     public TrainStorage() {
+    }
+
+    public void addWagon(String trainName, String wagonName){
+        for(Train train : trains){
+            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName));
+        }
+    }
+
+    public void addWagon(String trainName, String wagonName, int seats){
+        for(Train train : trains){
+            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName, seats));
+        }
+    }
+
+    public void addTrain(String trainName){
+        //if train does not yet exist with that name
+        if(trains.stream().filter(train -> train.getName().equals(trainName)).collect(Collectors.toList()).isEmpty()) trains.add(new Train(trainName));
     }
 
     public List<Train> getTrains() {
@@ -28,48 +44,6 @@ public class TrainStorage extends Observable {
 
     public void loadTrains() {
         trains = dbController.getTrainsFromDB();
-    }
-
-    public void trainChanged() {
-        setChanged();
-        notifyObservers();
-    }
-
-    public void updateTrains(String traint, String wagont, int wagonseats) {
-        this.train = traint;
-        this.wagon = wagont;
-        this.wagonseats = wagonseats;
-
-        if (trains.stream().filter(train -> train.getName().equals(traint)).collect(Collectors.toList()).isEmpty()) {
-            Train newTrain = new Train(train);
-            trains.add(newTrain);
-            dbController.addObject(newTrain);
-        }
-
-        if (wagont != null && wagonseats == 0) {
-            for (Train train : trains) {
-                if (train.getName().equals(traint)) {
-                    Wagon newWagon = new Wagon(wagont);
-                    newWagon.setTrainName(train.getName());
-                    train.addWagon(newWagon);
-                    dbController.addObject(newWagon);
-                }
-            }
-        } else {
-            if (wagont != null && wagonseats != 0) {
-                for (Train train : trains) {
-                    if (train.getName().equals(traint)) {
-                        Wagon newWagon = new Wagon(wagont, wagonseats);
-                        newWagon.setTrainName(train.getName());
-                        train.addWagon(newWagon);
-                        dbController.addObject(newWagon);
-                    }
-                }
-            }
-        }
-
-        trainChanged();
-
     }
 
     public boolean trainExist(String trainName) {
@@ -109,7 +83,6 @@ public class TrainStorage extends Observable {
     }
 
     public String getTrainSeats(String trainName) {
-        int totalSeats = 0;
         for(Train train : trains){
             if(train.getName().equals(trainName)) return "" + train.getSeats();
         }

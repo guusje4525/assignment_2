@@ -35,7 +35,6 @@ public class Gui {
     Action submitInput = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            //Hier moet de observer zeggen tegen Controller van jo ik heb een bericht voor je
 
             if (input.getText() != null && !"".equals(input.getText())) {
                 new Translator(input.getText(), controller);
