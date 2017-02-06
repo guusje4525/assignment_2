@@ -1,6 +1,7 @@
 package Trains;
 
-import Dao.dbController;
+import Dao.DatabaseManager;
+import Dao.SQLLiteManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,28 +11,41 @@ import java.util.stream.Collectors;
 public class TrainStorage {
 
     private List<Train> trains = new ArrayList<Train>();
-    private String train;
-    private String wagon;
-    private int wagonseats;
+    private DatabaseManager database;
 
     public TrainStorage() {
+        database = new SQLLiteManager();
     }
 
     public void addWagon(String trainName, String wagonName){
         for(Train train : trains){
-            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName));
+            if(train.getName().equals(trainName)){
+                Wagon newWagon = new Wagon(wagonName);
+                newWagon.setTrainName(trainName);
+                train.addWagon(newWagon);
+                database.addObject(newWagon);
+            }
         }
     }
 
     public void addWagon(String trainName, String wagonName, int seats){
         for(Train train : trains){
-            if(train.getName().equals(trainName)) train.addWagon(new Wagon(wagonName, seats));
+            if(train.getName().equals(trainName)){
+                Wagon newWagon = new Wagon(wagonName, seats);
+                newWagon.setTrainName(trainName);
+                train.addWagon(newWagon);
+                database.addObject(newWagon);
+            }
         }
     }
 
     public void addTrain(String trainName){
         //if train does not yet exist with that name
-        if(trains.stream().filter(train -> train.getName().equals(trainName)).collect(Collectors.toList()).isEmpty()) trains.add(new Train(trainName));
+        if(trains.stream().filter(train -> train.getName().equals(trainName)).collect(Collectors.toList()).isEmpty()){
+            Train newTrain = new Train(trainName);
+            trains.add(newTrain);
+            database.addObject(newTrain);
+        }
     }
 
     public List<Train> getTrains() {
@@ -43,7 +57,7 @@ public class TrainStorage {
     }
 
     public void loadTrains() {
-        trains = dbController.getTrainsFromDB();
+        trains = database.getTrains();
     }
 
     public boolean trainExist(String trainName) {
@@ -58,18 +72,6 @@ public class TrainStorage {
             }
         }
         return false;
-    }
-
-    public String getTrain() {
-        return train;
-    }
-
-    public String getWagon() {
-        return wagon;
-    }
-
-    public int getWagonseats() {
-        return wagonseats;
     }
 
     public int getWagonSeats(String wagonName) {
@@ -103,9 +105,9 @@ public class TrainStorage {
             if (train.getName().equals(trainName)) {
                 iter.remove();
                 for (Wagon tmpWagon : train.getWagons()) {
-                    dbController.deleteObject(tmpWagon);
+                    database.deleteObject(tmpWagon);
                 }
-                dbController.deleteObject(train);
+                database.deleteObject(train);
                 return true;
             }
         }
@@ -120,7 +122,7 @@ public class TrainStorage {
                 Wagon wagon = iter.next();
                 if (wagon.getWagon().equals(wagonName)) {
                     iter.remove();
-                    dbController.deleteObject(wagon);
+                    database.deleteObject(wagon);
                     return true;
                 }
             }

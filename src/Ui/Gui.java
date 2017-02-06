@@ -6,7 +6,8 @@ import Controllers.Translator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by Guus on 12/12/2016.
@@ -22,7 +23,7 @@ public class Gui {
     private JComboBox selectTrain;
     private JToggleButton dslToggle, trainGuiToggle;
     private ArrayList<JLabel> drawingProperties;
-    Action toggleDSL = new AbstractAction() {
+    private Action toggleDSL = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dslField.setVisible(true);
@@ -32,7 +33,7 @@ public class Gui {
         }
     };
     private Controller controller;
-    Action submitInput = new AbstractAction() {
+    private Action submitInput = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -47,11 +48,10 @@ public class Gui {
                 newWagonInput.setText("");
             }
             refreshScreen();
-            setItemsInSelectTrain();
 
         }
     };
-    Action toggleGUI = new AbstractAction() {
+    private Action toggleGUI = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dslField.setVisible(false);
@@ -60,8 +60,7 @@ public class Gui {
             drawTrains();
         }
     };
-    //setbounds(x, y, w, h)
-    //1ste hoever naar rechts
+
     private JScrollPane consoleField, dslField;
 
     public Gui(Controller controller) {
@@ -175,14 +174,11 @@ public class Gui {
                 if (!dslField.isVisible()) drawTrains();
             }
 
-            public void componentMoved(ComponentEvent arg0) {
-            }
+            public void componentMoved(ComponentEvent arg0) { }
 
-            public void componentHidden(ComponentEvent arg0) {
-            }
+            public void componentHidden(ComponentEvent arg0) { }
 
-            public void componentShown(ComponentEvent arg0) {
-            }
+            public void componentShown(ComponentEvent arg0) { }
         });
 
         //refreshes the screen
@@ -202,9 +198,11 @@ public class Gui {
         console.setText("");
     }
 
-    public void setItemsInSelectTrain() {
+    public void setItemsInSelectTrain(List<String> trains) {
+        //Remove all items inside the JComboBox
         selectTrain.removeAllItems();
-        for (String trainName : controller.getTrainNames()) {
+
+        for (String trainName : trains) {
             selectTrain.addItem(trainName);
         }
     }

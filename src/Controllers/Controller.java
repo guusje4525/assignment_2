@@ -12,13 +12,14 @@ import java.util.List;
  * Created by Guus on 12/12/2016.
  */
 public class Controller {
-    TrainStorage storage = new TrainStorage();
-    Gui ui;
+    private TrainStorage storage = new TrainStorage();
+    private Gui ui;
 
     public void start() {
         storage.loadTrains();
         ui = new Gui(this);
         ui.createFrame();
+        setItemsInSelectTrain();
     }
 
     public void updateConsole(String newOutput) {
@@ -35,7 +36,7 @@ public class Controller {
     }
 
     public void setItemsInSelectTrain() {
-        ui.setItemsInSelectTrain();
+        ui.setItemsInSelectTrain(getTrainNames());
     }
 
     public List<String> getTrainNames() {
@@ -63,6 +64,7 @@ public class Controller {
         if (!storage.trainExist(trainName)) {
             storage.addTrain(trainName);
             this.updateConsole("New train added");
+            setItemsInSelectTrain();
         } else this.updateConsole("Train name must be unique");
     }
 
@@ -96,6 +98,7 @@ public class Controller {
     public void deleteTrain(String trainName) {
         if (storage.deleteTrain(trainName)) updateConsole("Train was deleted");
         else updateConsole("Unable to find train");
+        setItemsInSelectTrain();
     }
 
     public void deleteWagon(String wagonName) {

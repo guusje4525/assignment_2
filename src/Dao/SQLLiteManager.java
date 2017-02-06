@@ -13,18 +13,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by Guus on 12/28/2016.
+ * Created by Guus on 2/6/2017.
  */
-public class dbController {
+public class SQLLiteManager implements DatabaseManager {
 
-    private static SessionFactory factory;
+    private SessionFactory factory;
 
-    public static SessionFactory getFactory() {
-        if (factory == null) createFactory();
-        return factory;
-    }
-
-    public static void createFactory() {
+    public void createConnection() {
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -40,15 +35,15 @@ public class dbController {
         }
     }
 
-    public static List<Wagon> getWagonsFromDB() {
-        if (factory == null) createFactory();
+    public List<Wagon> getWagons() {
+        if (factory == null) createConnection();
         Session session = factory.openSession();
         Transaction tx = null;
         List<Wagon> wagons = new ArrayList<>();
         try {
             tx = session.beginTransaction();
-            List products = session.createQuery("FROM Wagon").list();
-            for (Iterator iterator = products.iterator(); iterator.hasNext(); ) {
+            List wagonsFromDB = session.createQuery("FROM Wagon").list();
+            for (Iterator iterator = wagonsFromDB.iterator(); iterator.hasNext(); ) {
                 wagons.add((Wagon) iterator.next());
             }
             tx.commit();
@@ -61,8 +56,8 @@ public class dbController {
         return wagons;
     }
 
-    public static void addObject(Object obj) {
-        if (factory == null) createFactory();
+    public void addObject(Object obj) {
+        if (factory == null) createConnection();
         Session session = factory.openSession();
         Transaction tx = null;
         try {
@@ -77,8 +72,9 @@ public class dbController {
         }
     }
 
-    public static void deleteObject(Object obj) {
-        if (factory == null) createFactory();
+    public void deleteObject(Object obj) {
+        if(obj == null) return;
+        if (factory == null) createConnection();
         Session session = factory.openSession();
         Transaction tx = null;
         try {
@@ -93,9 +89,9 @@ public class dbController {
         }
     }
 
-    public static List<Train> getTrainsFromDB() {
-        if (factory == null) createFactory();
-        List<Wagon> wagons = getWagonsFromDB();
+    public List<Train> getTrains() {
+        if (factory == null) createConnection();
+        List<Wagon> wagons = getWagons();
         Session session = factory.openSession();
         Transaction tx = null;
         List<Train> trains = new ArrayList<>();

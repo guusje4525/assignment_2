@@ -11,9 +11,6 @@ public class TrainService {
         Controller controller = new Controller();
         controller.start();
 
-        controller.clearConsole();
-        controller.setItemsInSelectTrain(); //This function should be deprecated when Dao is correctly implemented
-
     }
 
 }
